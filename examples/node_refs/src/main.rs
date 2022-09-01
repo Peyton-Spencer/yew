@@ -1,7 +1,6 @@
 mod input;
-
 use input::InputComponent;
-use web_sys::HtmlInputElement;
+use web_sys::{HtmlInputElement};
 use yew::prelude::*;
 
 pub enum Msg {
@@ -17,6 +16,8 @@ pub struct App {
 }
 impl App {
     fn apply_focus(&self) {
+        // focus failed for password InputComponent (none)
+        // InputComponent cannot cast to HtmlInputElement
         if let Some(input) = self.refs[self.focus_index].cast::<HtmlInputElement>() {
             input.focus().unwrap();
         }
@@ -46,7 +47,7 @@ impl Component for App {
             Msg::HoverIndex(index) => {
                 self.focus_index = index;
                 self.apply_focus();
-                false
+                true
             }
             Msg::Submit => {
                 let email = &self.refs[0];
@@ -89,8 +90,6 @@ impl Component for App {
                         <div class="input-container">
                             <label>{ "Password" }</label>
                             <InputComponent
-                                ref={&self.refs[1]}
-                                on_hover={ctx.link().callback(|_| Msg::HoverIndex(1))}
                                 placeholder="password"
                             />
                             <div class="error">{self.password_error.clone()}</div>
